@@ -28,3 +28,7 @@ from PDF statements received via Gmail and writes them to Google Sheets.
 - notes/       — agent scratch notes
 - issues/      — tracked problems
 - docs/        — generated documentation
+
+
+## Key Files
+- `src/extract.py` — Statement PDF extractor CLI that writes JSON outputs next to input PDFs.

@@ -28,3 +28,7 @@ from PDF statements received via Gmail and writes them to Google Sheets.
 - notes/       — agent scratch notes
 - issues/      — tracked problems
 - docs/        — generated documentation
+
+## Setup
+- Install dependencies before coding: `pip install -r requirements.txt`
+- If a new dependency is needed, add it to requirements.txt first

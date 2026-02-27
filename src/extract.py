@@ -94,11 +94,11 @@ def extract_statement(pdf_path: Path) -> dict[str, object]:
     if not property_match:
         raise ValueError(f"Property not found in statement: {pdf_path}")
 
-    opening_match = re.search(r"Opening Balance\s*(£[\d,]+\.\d{2})", statement_text)
+    opening_match = re.search(r"Opening Balance\s*(-?£[\d,]+\.\d{2})", statement_text)
     if not opening_match:
         raise ValueError(f"Opening balance not found in statement: {pdf_path}")
 
-    closing_match = re.search(r"Closing Balance\s*(£[\d,]+\.\d{2})", statement_text)
+    closing_match = re.search(r"Closing Balance\s*(-?£[\d,]+\.\d{2})", statement_text)
     if not closing_match:
         raise ValueError(f"Closing balance not found in statement: {pdf_path}")
 

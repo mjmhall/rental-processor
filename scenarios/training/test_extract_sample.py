@@ -2,6 +2,7 @@ import json
 import subprocess
 from pathlib import Path
 
+
 SAMPLE_PDF = "samples/CCL240085 - Landlord Statement Flat 3, 6 Montpellier Spa Road 33.pdf"
 
 def test_extract_runs_without_error():
@@ -64,3 +65,33 @@ def test_reconciliation():
     assert abs(balance - data["closing_balance"]) < 0.01, \
         f"Reconciliation failed: calculated {balance}, but closing balance is {data['closing_balance']}"
 
+
+def test_extract_statement_supports_negative_header_balances(monkeypatch):
+    import importlib.util
+
+    module_path = Path(__file__).resolve().parents[2] / "src" / "extract.py"
+    spec = importlib.util.spec_from_file_location("extract_module", module_path)
+    extract = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(extract)
+
+    class FakePage:
+        def extract_text(self):
+            return "\n".join(
+                [
+                    "Property: Flat 1, Example Road",
+                    "Opening Balance -£123.45",
+                    "Closing Balance -£23.45",
+                ]
+            )
+
+    class FakeReader:
+        def __init__(self, _path: str):
+            self.pages = [FakePage()]
+
+    monkeypatch.setattr(extract, "PdfReader", FakeReader)
+
+    payload = extract.extract_statement(Path("dummy.pdf"))
+
+    assert payload["opening_balance"] == -123.45
+    assert payload["closing_balance"] == -23.45
